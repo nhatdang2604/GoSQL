@@ -23,14 +23,14 @@
 
 namespace go gosql
 
-include ./statement/select.thrift
-include ./statement/from.thrift
+include "statement/select.thrift"
+include "statement/from.thrift"
 
 
 /*
     Select command, with limited support comparing to normal SQL
 */
 struct SelectCommand {
-    1: required SelectStatement select,
-    2: required FromStatement from,
+    1: required select.SelectStatement select,
+    2: required from.FromStatement from,
 }

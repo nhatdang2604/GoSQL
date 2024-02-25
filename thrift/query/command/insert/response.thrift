@@ -23,13 +23,12 @@
 
 namespace go gosql
 
-include "statement/into.thrift"
-include "statement/values.thrift"
-
 /*
-    Insert command, with limited support comparing to normal SQL
+    Response to client from database
 */
-struct InsertCommand {
-    1: required into.IntoStatement into,
-    2: required values.ValuesStatement values,
+struct InsertResponse {
+    1: required uuid request_id
+    2: required uuid response_id,
+    3: required i64 insert_count, 
 }
+

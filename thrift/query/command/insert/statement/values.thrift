@@ -23,17 +23,8 @@
 
 namespace go gosql
 
-include ../../../../datatype/datatype.thrift
-
-struct ColumnToInsert {
-    1: required DatatypeTag datatype,
-    2: required binary value,
-}
-
-struct RowToInsert {
-    1: required list<ColumnToInsert> columns
-}
+include "../../../../component/row.thrift"
 
 struct ValuesStatement {
-    1: required list<RowToInsert> rows,
+    1: required list<row.Row> rows,
 }

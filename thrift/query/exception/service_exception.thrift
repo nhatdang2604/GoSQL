@@ -23,13 +23,11 @@
 
 namespace go gosql
 
-include "statement/into.thrift"
-include "statement/values.thrift"
+enum ExceptionCode {
+    INVALID_SYNTAX = 1,
+}
 
-/*
-    Insert command, with limited support comparing to normal SQL
-*/
-struct InsertCommand {
-    1: required into.IntoStatement into,
-    2: required values.ValuesStatement values,
+exception InvalidSyntaxException {
+    1: required ExceptionCode code = ExceptionCode.INVALID_SYNTAX,
+    2: required string description,
 }

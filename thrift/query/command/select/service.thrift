@@ -23,13 +23,14 @@
 
 namespace go gosql
 
-include "statement/into.thrift"
-include "statement/values.thrift"
+include "request.thrift"
+include "response.thrift"
+include "../../exception/service_exception.thrift"
 
 /*
-    Insert command, with limited support comparing to normal SQL
+    Actions base on selecting
 */
-struct InsertCommand {
-    1: required into.IntoStatement into,
-    2: required values.ValuesStatement values,
+service SelectService {
+    response.SelectResponse query(1:request.SelectRequest request) throws (1: service_exception.InvalidSyntaxException invalid_syntax_exception),
 }
+
