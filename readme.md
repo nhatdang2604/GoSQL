@@ -10,8 +10,7 @@ This project is a practice of:
  
 ## How to compile thrift source into Go language ?
 
-To compile thrift source into Go, from root folder, please run 2 below commands seperately
-`thrift -r --gen go ./thrift/query/command/select/service.thrift`
-`thrift -r --gen go ./thrift/query/command/insert/service.thrift`
+To compile thrift source into Go, from root folder, please run the below command
+`thrift -r --gen go thrift/main.thrift
 
 There would be /gen-go folder compiled into root folder

@@ -21,7 +21,7 @@
  * details.
  */
 
-namespace go gosql
+namespace go gothrift.datatype
 
 /* Datatype supported by GoSQL */
 enum DatatypeTag {

@@ -21,7 +21,7 @@
  * details.
  */
 
-namespace go gosql
+namespace go gothrift.query.exception
 
 enum ExceptionCode {
     INVALID_SYNTAX = 1,

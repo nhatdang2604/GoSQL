@@ -21,7 +21,7 @@
  * details.
  */
 
-namespace go gosql
+namespace go gothrift.component
 
 include "column.thrift"
 

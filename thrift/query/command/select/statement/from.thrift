@@ -21,7 +21,7 @@
  * details.
  */
 
-namespace go gosql
+namespace go gothrift.query.command.select.statement
 
 struct FromStatement {
     1: required string database_name,

@@ -21,7 +21,7 @@
  * details.
  */
 
-namespace go gosql
+namespace go gothrift.query.command.insert
 
 include "command.thrift"
 

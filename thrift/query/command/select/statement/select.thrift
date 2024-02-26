@@ -21,7 +21,7 @@
  * details.
  */
 
-namespace go gosql
+namespace go gothrift.query.command.select.statement
 
 struct SelectStatement {
     1: required list<string> column_names,

@@ -21,7 +21,7 @@
  * details.
  */
 
-namespace go gosql
+namespace go gothrift.query.command.insert.statement
 
 struct IntoStatement {
     1: required string database_name,

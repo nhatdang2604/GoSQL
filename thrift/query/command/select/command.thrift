@@ -21,7 +21,7 @@
  * details.
  */
 
-namespace go gosql
+namespace go gothrift.query.command.select
 
 include "statement/select.thrift"
 include "statement/from.thrift"
