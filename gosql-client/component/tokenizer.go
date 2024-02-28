@@ -10,7 +10,7 @@ type Tokenizer interface {
 
 type Lexer struct{}
 
-func (*Lexer) Tokenize(input string) []string {
+func (Lexer) Tokenize(input string) []string {
 	var tokens []string = strings.Split(input, " ")
 	return tokens
 }
