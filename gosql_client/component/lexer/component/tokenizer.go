@@ -12,3 +12,7 @@ func (Tokenizer) Tokenize(input string) []string {
 	var tokens []string = strings.Split(input, " ")
 	return tokens
 }
+
+func MakeTokenizable() Tokenizable {
+	return Tokenizer{}
+}

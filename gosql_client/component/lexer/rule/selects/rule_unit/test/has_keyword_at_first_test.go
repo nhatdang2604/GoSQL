@@ -3,15 +3,15 @@ package test
 import (
 	lexcom "gosql_client/component/lexer/component"
 	irul "gosql_client/component/lexer/rule/interfaces"
-	rul "gosql_client/component/lexer/rule/selects"
+	urul "gosql_client/component/lexer/rule/selects/rule_unit"
 	"strings"
 	"testing"
 )
 
 func TestSuccessCaseWithUppercaseKeyword(t *testing.T) {
-	var rule irul.Rule = rul.HasKeywordAtFirstRule{}
+	var rule irul.Rule = urul.HasKeywordAtFirstRule{}
 	var tokens []string = []string{"SELECT"}
-	var command *lexcom.Command = lexcom.Parse(tokens)
+	var command *lexcom.Command = lexcom.MakeCommand(tokens)
 	var expected = true
 
 	if actual := rule.Validate(*command); expected != actual {
@@ -21,9 +21,9 @@ func TestSuccessCaseWithUppercaseKeyword(t *testing.T) {
 }
 
 func TestSuccessCaseWithLowercaseKeyword(t *testing.T) {
-	var rule irul.Rule = rul.HasKeywordAtFirstRule{}
+	var rule irul.Rule = urul.HasKeywordAtFirstRule{}
 	var tokens []string = []string{"select"}
-	var command *lexcom.Command = lexcom.Parse(tokens)
+	var command *lexcom.Command = lexcom.MakeCommand(tokens)
 	var expected = true
 
 	if actual := rule.Validate(*command); expected != actual {
@@ -33,9 +33,9 @@ func TestSuccessCaseWithLowercaseKeyword(t *testing.T) {
 }
 
 func TestSuccessCaseWithRandomcaseKeyword(t *testing.T) {
-	var rule irul.Rule = rul.HasKeywordAtFirstRule{}
+	var rule irul.Rule = urul.HasKeywordAtFirstRule{}
 	var tokens []string = []string{"sElEcT"}
-	var command *lexcom.Command = lexcom.Parse(tokens)
+	var command *lexcom.Command = lexcom.MakeCommand(tokens)
 	var expected = true
 
 	if actual := rule.Validate(*command); expected != actual {
@@ -46,9 +46,9 @@ func TestSuccessCaseWithRandomcaseKeyword(t *testing.T) {
 }
 
 func TestSuccessCaseWithUntrimmedKeyword(t *testing.T) {
-	var rule irul.Rule = rul.HasKeywordAtFirstRule{}
+	var rule irul.Rule = urul.HasKeywordAtFirstRule{}
 	var tokens []string = []string{"  sElEcT  "}
-	var command *lexcom.Command = lexcom.Parse(tokens)
+	var command *lexcom.Command = lexcom.MakeCommand(tokens)
 	var expected = true
 
 	if actual := rule.Validate(*command); expected != actual {
@@ -59,9 +59,9 @@ func TestSuccessCaseWithUntrimmedKeyword(t *testing.T) {
 }
 
 func TestFailedCaseWithoutKeyword(t *testing.T) {
-	var rule irul.Rule = rul.HasKeywordAtFirstRule{}
+	var rule irul.Rule = urul.HasKeywordAtFirstRule{}
 	var tokens []string = []string{"FROM", "test.sample_db"}
-	var command *lexcom.Command = lexcom.Parse(tokens)
+	var command *lexcom.Command = lexcom.MakeCommand(tokens)
 	var expected = false
 
 	if actual := rule.Validate(*command); expected != actual {
@@ -71,9 +71,9 @@ func TestFailedCaseWithoutKeyword(t *testing.T) {
 }
 
 func TestFailedCaseWithoutAnything(t *testing.T) {
-	var rule irul.Rule = rul.HasKeywordAtFirstRule{}
+	var rule irul.Rule = urul.HasKeywordAtFirstRule{}
 	var tokens []string = []string{}
-	var command *lexcom.Command = lexcom.Parse(tokens)
+	var command *lexcom.Command = lexcom.MakeCommand(tokens)
 	var expected = false
 
 	if actual := rule.Validate(*command); expected != actual {
@@ -83,9 +83,9 @@ func TestFailedCaseWithoutAnything(t *testing.T) {
 }
 
 func TestFailedCaseWithKeywordAtSecondPlace(t *testing.T) {
-	var rule irul.Rule = rul.HasKeywordAtFirstRule{}
+	var rule irul.Rule = urul.HasKeywordAtFirstRule{}
 	var tokens []string = []string{"first-place", "SELECT"}
-	var command *lexcom.Command = lexcom.Parse(tokens)
+	var command *lexcom.Command = lexcom.MakeCommand(tokens)
 	var expected = false
 
 	if actual := rule.Validate(*command); expected != actual {

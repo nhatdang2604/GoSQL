@@ -42,6 +42,6 @@ func (c *Command) GetTokenAt(i int) (string, error) {
 	return trimmedTok, nil
 }
 
-func Parse(tokens []string) *Command {
+func MakeCommand(tokens []string) *Command {
 	return &Command{Toks: tokens}
 }
