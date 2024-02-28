@@ -1,6 +1,6 @@
 go 1.22.0
 
 use (
-	./gosql-client
-	./gosql-server
+	./gosql_client
+	./gosql_server
 )

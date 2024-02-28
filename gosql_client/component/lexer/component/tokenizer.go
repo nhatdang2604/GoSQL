@@ -1,16 +1,14 @@
 package component
 
-import (
-	"strings"
-)
+import "strings"
 
-type Tokenizer interface {
+type Tokenizable interface {
 	Tokenize(input string) []string
 }
 
-type Lexer struct{}
+type Tokenizer struct{}
 
-func (Lexer) Tokenize(input string) []string {
+func (Tokenizer) Tokenize(input string) []string {
 	var tokens []string = strings.Split(input, " ")
 	return tokens
 }
