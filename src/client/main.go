@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"gosql/src/client/component"
+	"github.com/nhatdang2604/gosql/src/client/component"
 )
 
 func main() {
