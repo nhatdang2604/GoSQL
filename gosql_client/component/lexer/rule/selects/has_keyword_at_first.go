@@ -6,9 +6,9 @@ import (
 	"strings"
 )
 
-type HasKeywordRule struct{}
+type HasKeywordAtFirstRule struct{}
 
-func (HasKeywordRule) Validate(command lexcom.Command) bool {
+func (HasKeywordAtFirstRule) Validate(command lexcom.Command) bool {
 
 	var firstToken, err = command.GetFirstToken()
 

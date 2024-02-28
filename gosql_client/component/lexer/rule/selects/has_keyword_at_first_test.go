@@ -8,7 +8,7 @@ import (
 )
 
 func TestHappyCase(t *testing.T) {
-	var rule irul.Rule = HasKeywordRule{}
+	var rule irul.Rule = HasKeywordAtFirstRule{}
 	var tokens []string = []string{"SELECT"}
 	var command *lexcom.Command = &lexcom.Command{Toks: tokens}
 
