@@ -18,4 +18,4 @@ There would be a /vendor/thrift/ folder compiled into root folder
 # How to test
 
 To run all the test inside **go_client** module, please run the below command\
-`go test ./gosql_client/...`
+`go test ./gosql_client/... -count=1`
