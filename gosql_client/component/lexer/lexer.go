@@ -18,11 +18,11 @@ func MakeLexer() *Lexer {
 	return &Lexer{
 		tokenizer: lexcom.MakeTokenizable(),
 		aggregatorMap: map[string]iaggr.RuleAggregatable{
-			constant.SelectKeyword: rul.MakeRuleAggr([]iaggr.Rule{
-				&selrul.HasKeywordAtFirstRule{},
+			constant.SELECT_KEYWORD: rul.MakeRuleAggr([]iaggr.Rule{
+				&selrul.HasSelectStatement{},
 				//TODO:
 			}),
-			constant.InsertKeyword: rul.MakeRuleAggr([]iaggr.Rule{
+			constant.INSERT_KEYWORD: rul.MakeRuleAggr([]iaggr.Rule{
 				&insrul.HasKeywordAtFirstRule{},
 				//TODO:
 			}),

@@ -3,7 +3,7 @@ package rule_unit
 import (
 	lexcom "gosql_client/component/lexer/component"
 	constant "gosql_client/constant"
-	"strings"
+	"gosql_client/helper"
 )
 
 type HasKeywordAtFirstRule struct{}
@@ -16,7 +16,7 @@ func (HasKeywordAtFirstRule) Validate(command lexcom.Command) bool {
 		return false
 	}
 
-	if constant.InsertKeyword != strings.ToLower(firstToken) {
+	if !helper.IsTokenEqualIgnoringCase(constant.INSERT_KEYWORD, firstToken) {
 		return false
 	}
 
