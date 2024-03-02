@@ -8,13 +8,13 @@ import (
 type HasFromStatementRule struct{}
 
 func (HasFromStatementRule) Validate(command lexcom.Command) bool {
-	var selectIdx, err = command.FindKeyword(constant.FROM_KEYWORD)
+	var fromIdx, err = command.FindKeyword(constant.FROM_KEYWORD)
 
 	if nil != err {
 		return false
 	}
 
-	if selectIdx != 0 {
+	if fromIdx != 0 {
 		return false
 	}
 
