@@ -1,4 +1,4 @@
-package rule_unit
+package fromstm
 
 import (
 	lexcom "gosql_client/component/lexer/component"
@@ -6,9 +6,9 @@ import (
 	"strings"
 )
 
-type HasTableNameAfterDot struct{}
+type HasTableNameAfterDotRule struct{}
 
-func (HasTableNameAfterDot) Validate(command lexcom.Command) bool {
+func (HasTableNameAfterDotRule) Validate(command lexcom.Command) bool {
 	var fromIdx, err1 = command.FindKeyword(constant.FROM_KEYWORD)
 
 	if nil != err1 {

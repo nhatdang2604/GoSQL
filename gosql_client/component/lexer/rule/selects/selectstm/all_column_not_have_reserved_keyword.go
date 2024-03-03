@@ -1,4 +1,4 @@
-package rule_unit
+package selectstm
 
 import (
 	lexcom "gosql_client/component/lexer/component"
@@ -6,9 +6,9 @@ import (
 	"gosql_client/helper"
 )
 
-type ColumnNotHasReservedKeywordRule struct{}
+type AllColumnNotHasReservedKeywordRule struct{}
 
-func (ColumnNotHasReservedKeywordRule) Validate(command lexcom.Command) bool {
+func (AllColumnNotHasReservedKeywordRule) Validate(command lexcom.Command) bool {
 
 	var selectIndex, err1 = command.FindKeyword(constant.SELECT_KEYWORD)
 	var fromIndex, err2 = command.FindKeyword(constant.FROM_KEYWORD)

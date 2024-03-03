@@ -1,4 +1,4 @@
-package rule_unit
+package fromstm
 
 import (
 	lexcom "gosql_client/component/lexer/component"
