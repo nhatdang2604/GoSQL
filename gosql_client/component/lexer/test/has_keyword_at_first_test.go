@@ -2,7 +2,7 @@ package test
 
 import (
 	lexcom "gosql_client/component/lexer/component"
-	urul "gosql_client/component/lexer/rule/inserts/rule_unit"
+	urul "gosql_client/component/lexer/rule/insertcmd"
 	irul "gosql_client/component/lexer/rule/interfaces"
 	"strings"
 	"testing"

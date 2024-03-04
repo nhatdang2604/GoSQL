@@ -14,7 +14,7 @@ func (HasFromStatementRule) Validate(command lexcom.Command) bool {
 		return false
 	}
 
-	if fromIdx != 0 {
+	if fromIdx < 2 {
 		return false
 	}
 

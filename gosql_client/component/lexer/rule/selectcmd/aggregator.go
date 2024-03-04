@@ -3,8 +3,8 @@ package selects
 import (
 	lexcom "gosql_client/component/lexer/component"
 	irul "gosql_client/component/lexer/rule/interfaces"
-	frmstm "gosql_client/component/lexer/rule/selects/fromstm"
-	selstm "gosql_client/component/lexer/rule/selects/selectstm"
+	frmstm "gosql_client/component/lexer/rule/selectcmd/fromstm"
+	selstm "gosql_client/component/lexer/rule/selectcmd/selectstm"
 )
 
 type SelectCommandRuleAggregator struct {
