@@ -21,17 +21,6 @@
  * details.
  */
 
-namespace go gothrift.query.command.insert
+namespace go gothrift.query.command.insert.statement
 
-include "statement/insert.thrift"
-include "statement/into.thrift"
-include "statement/values.thrift"
-
-/*
-    Insert command, with limited support comparing to normal SQL
-*/
-struct InsertCommand {
-    1: required insert.InsertStatement insert,
-    2: required into.IntoStatement into,
-    3: required values.ValuesStatement values,
-}
+struct InsertStatement {}
