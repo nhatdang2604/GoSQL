@@ -32,6 +32,7 @@ func MakeRuleAggr() irul.RuleAggregatable {
 			HasClosedBracketBeforeValuesStatementRule{},
 			HasColumnInsideBracketRule{},
 			AllColumnNotHasReservedKeywordRule{},
+			AllColumnSurroundedByQuoteRule{},
 		},
 	}
 }
