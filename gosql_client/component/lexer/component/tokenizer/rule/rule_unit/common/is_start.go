@@ -4,23 +4,24 @@ import (
 	"fmt"
 	"gosql_client/component/lexer/component/tokenizer/alias"
 	"gosql_client/component/lexer/component/tokenizer/constants"
+	"gosql_client/component/lexer/component/tokenizer/rule/rule_helper"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_input"
 )
 
-type StartToTokenizeRule struct {
+type IsStartRule struct {
 	errMsg string
 }
 
-func (r *StartToTokenizeRule) Validate(i interface{}) bool {
+func (r *IsStartRule) Validate(i interface{}) bool {
 	var st, ok = i.(rule_input.SingleTok)
 
 	if !ok {
-		r.errMsg = "unexpected input type for StartToTokenizeRule.Validate()"
+		r.errMsg = "unexpected input type for IsStartRule.Validate()"
 		return false
 	}
 
 	var tok string = st.Tok
-	if tok == "" {
+	if rule_helper.AreTokEqual(tok, constants.KEYWORD_START) {
 		return true
 	}
 
@@ -28,10 +29,10 @@ func (r *StartToTokenizeRule) Validate(i interface{}) bool {
 	return false
 }
 
-func (r *StartToTokenizeRule) Key() alias.RuleKey {
-	return constants.RULE_START_TO_TOKENIZE
+func (r *IsStartRule) Key() alias.RuleKey {
+	return constants.RULE_IS_START
 }
 
-func (r *StartToTokenizeRule) ErrorMsg() string {
+func (r *IsStartRule) ErrorMsg() string {
 	return r.errMsg
 }

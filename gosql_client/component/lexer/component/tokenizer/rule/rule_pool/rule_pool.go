@@ -24,7 +24,7 @@ func (rp RulePoolImpl) Get(key RuleKey) Rule {
 
 func New() RulePool {
 	var rules []Rule = []Rule{
-		&common.StartToTokenizeRule{},
+		&common.IsStartRule{},
 		&common.IsSelectRule{},
 		&common.IsInsertRule{},
 	}

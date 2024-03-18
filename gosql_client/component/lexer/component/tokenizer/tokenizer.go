@@ -13,6 +13,8 @@ import (
 //select * from db.test;
 //select a from db.test;
 //select t.a from db.test;
+//select a, b from db.test;
+//select t.a, t.b from db.test;
 
 //insert into db.test values (1, 'b', true);
 //insert into db.test values (1, 'b', true), (2, 'c', false);

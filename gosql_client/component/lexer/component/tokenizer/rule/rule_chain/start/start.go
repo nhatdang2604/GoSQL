@@ -20,38 +20,53 @@ type StartChain struct {
 
 func (c *StartChain) Exec(toks []string) bool {
 
+	c.curTok = constants.KEYWORD_START
 	c.remainToks = toks
-	var firstTok = toks[0]
 	var isSuccess bool = false
 
-	if selectRule := c.pool.Get(constants.RULE_IS_SELECT); selectRule.Validate(rule_input.SingleTok{Tok: firstTok}) {
-		isSuccess = c.setAsSelect(firstTok)
-	} else if insertRule := c.pool.Get(constants.RULE_IS_INSERT); insertRule.Validate(rule_input.SingleTok{Tok: firstTok}) {
-		isSuccess = c.setAsInsert(firstTok)
-	} else {
-		isSuccess = c.setAsInvalid(firstTok)
+	if c.isStart(c.curTok) {
+
+		if len(toks) == 0 {
+			var firstTok = ""
+			return c.setAsInvalid(firstTok)
+		}
+
+		var firstTok = toks[0]
+		if c.isNextRuleSelect(firstTok) {
+			c.nextRuleChain = selects.New(c.pool)
+			isSuccess = true
+		} else if c.isNextRuleInsert(firstTok) {
+			c.nextRuleChain = inserts.New(c.pool)
+			isSuccess = true
+		} else {
+			isSuccess = c.setAsInvalid(firstTok)
+		}
 	}
 
 	return isSuccess
 }
 
-func (c *StartChain) setAsSelect(tok string) bool {
-	c.curTok = tok
-	c.remainToks = c.remainToks[1:]
-	c.nextRuleChain = selects.New(c.pool)
-	return true
+func (c *StartChain) isStart(tok string) bool {
+	startRule := c.pool.Get(constants.RULE_IS_START)
+	var isSuccess bool = startRule.Validate(rule_input.SingleTok{Tok: tok})
+	return isSuccess
 }
 
-func (c *StartChain) setAsInsert(tok string) bool {
-	c.curTok = tok
-	c.remainToks = c.remainToks[1:]
-	c.nextRuleChain = inserts.New(c.pool)
-	return true
+func (c *StartChain) isNextRuleSelect(tok string) bool {
+	selectRule := c.pool.Get(constants.RULE_IS_SELECT)
+	var isSelect bool = selectRule.Validate(rule_input.SingleTok{Tok: tok})
+	return isSelect
+}
+
+func (c *StartChain) isNextRuleInsert(tok string) bool {
+	insertRule := c.pool.Get(constants.RULE_IS_INSERT)
+	var isInsert bool = insertRule.Validate(rule_input.SingleTok{Tok: tok})
+	return isInsert
 }
 
 func (c *StartChain) setAsInvalid(tok string) bool {
-	c.nextRuleChain = nil
 	c.errMsg = fmt.Sprintf("Expected `%s` or `%s` but found `%s`", constants.KEYWORD_SELECT, constants.KEYWORD_INSERT, tok)
+	c.nextRuleChain = nil
 	return false
 }
 
