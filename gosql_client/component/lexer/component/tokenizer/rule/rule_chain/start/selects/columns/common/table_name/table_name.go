@@ -55,7 +55,7 @@ func (c *TableNameRule) setAsComma(toks []string) bool {
 	toks[0] = comma // transform token 'b,' into ','
 	c.curTok = tableName
 	c.remainToks = toks
-	c.nextRuleChain = is_comma.New(c.pool)
+	c.nextRuleChain = is_comma.SharedIsCommaChain
 	return true
 }
 
