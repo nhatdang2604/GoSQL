@@ -14,5 +14,6 @@ const (
 	RULE_HAS_ONLY_ONE_COMMA alias.RuleKey = "has_only_one_comma"
 	RULE_HAS_COMMA_AT_LAST  alias.RuleKey = "has_comma_at_last"
 	RULE_IS_DOT             alias.RuleKey = "is_dot"
+	RULE_IS_COMMA           alias.RuleKey = "is_comma"
 	RULE_IS_FROM            alias.RuleKey = "is_from"
 )

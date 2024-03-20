@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gosql_client/component/lexer/component/tokenizer/constants"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain"
+	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain/start/selects/columns/column_with_dot/table_name"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_input"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_pool"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_unit"
@@ -23,7 +24,7 @@ func (c *DotAtFirstChain) Exec(toks []string) bool {
 	var firstTok string = toks[0]
 
 	if c.hasOnlyOneDotAtFirst(firstTok) {
-		c.curTok = "."
+		c.curTok = string(constants.SYMBOL_DOT)
 		toks[0] = c.rmDotFromTok(firstTok) //replace the ".b" with "b"
 		c.remainToks = toks
 		isSuccess = c.setNextRule(c.remainToks)
@@ -49,10 +50,11 @@ func (c *DotAtFirstChain) rmDotFromTok(tok string) string {
 
 func (c *DotAtFirstChain) setNextRule(toks []string) bool {
 	var isSuccess bool = false
-	var nextTok string = toks[0] // Because the 'a.b' tok now become '.b' tok
+	var nextTok string = toks[0] // Because the '.b' tok now become 'b' tok
 
-	if c.isNextRuleHasCommaAtLast(nextTok) {
-		//TODO:
+	if c.isNextRuleHasCommaAtLast(nextTok) || c.isNextRuleDoesntHaveComma(nextTok) {
+		c.nextRuleChain = table_name.New(c.pool)
+		isSuccess = true
 	}
 
 	if !isSuccess {
@@ -68,6 +70,23 @@ func (c *DotAtFirstChain) isNextRuleHasCommaAtLast(tok string) bool {
 	var HasCommaAtLastRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_COMMA_AT_LAST)
 
 	var hasComma bool = hasCommaRule.Validate(tok)
+	var hasOnlyOneComma bool = hasOnlyOneCommaRule.Validate(tok)
+	var HasCommaAtLast bool = HasCommaAtLastRule.Validate(tok)
+
+	return hasComma && hasOnlyOneComma && HasCommaAtLast
+}
+
+func (c *DotAtFirstChain) isNextRuleDoesntHaveComma(tok string) bool {
+	var hasCommaRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_COMMA)
+	var notHaveComma bool = !hasCommaRule.Validate(tok)
+
+	return notHaveComma
+}
+
+func (c *DotAtFirstChain) isNextRuleColumnNotHavingComma(tok string) bool {
+	var hasCommaRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_COMMA)
+
+	var notHaveComma bool = !hasCommaRule.Validate(tok)
 	var hasOnlyOneComma bool = hasOnlyOneCommaRule.Validate(tok)
 	var HasCommaAtLast bool = HasCommaAtLastRule.Validate(tok)
 
