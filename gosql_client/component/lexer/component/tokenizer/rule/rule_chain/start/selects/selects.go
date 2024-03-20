@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"gosql_client/component/lexer/component/tokenizer/constants"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain"
-	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain/start/selects/column_with_dot"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain/start/selects/columns/column_with_dot"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain/start/selects/columns/column_with_star"
+	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain/start/selects/columns/column_without_dot"
+	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain/start/selects/columns/common/is_comma"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_input"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_pool"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_unit"
@@ -103,7 +104,18 @@ func (c *SelectChain) NextRuleChain() rule_chain.RuleChain {
 }
 
 func New(pool rule_pool.RulePool) rule_chain.RuleChain {
+
+	//Init IsCommaRuleChain
+	initIsCommaRuleChain(pool)
+
 	return &SelectChain{
 		pool: pool,
 	}
+}
+
+func initIsCommaRuleChain(pool rule_pool.RulePool) {
+	is_comma.SharedIsCommaChain = is_comma.New(pool)
+	is_comma.SharedIsCommaChain.AddColumnRuleChain(column_with_star.New(pool))
+	is_comma.SharedIsCommaChain.AddColumnRuleChain(column_with_dot.New(pool))
+	is_comma.SharedIsCommaChain.AddColumnRuleChain(column_without_dot.New(pool))
 }

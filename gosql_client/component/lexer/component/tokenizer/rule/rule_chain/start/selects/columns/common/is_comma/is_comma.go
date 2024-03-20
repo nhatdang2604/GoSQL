@@ -4,15 +4,25 @@ import (
 	"fmt"
 	"gosql_client/component/lexer/component/tokenizer/constants"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain"
+	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain/start/selects/columns/interfaces/column_rule_chain"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_pool"
 )
 
+var (
+	SharedIsCommaChain *IsCommaChain
+)
+
+func (c *IsCommaChain) AddColumnRuleChain(columnRuleChain column_rule_chain.ColumnRuleChain) {
+	c.columnRuleChainPool = append(c.columnRuleChainPool, columnRuleChain)
+}
+
 type IsCommaChain struct {
-	nextRuleChain rule_chain.RuleChain
-	pool          rule_pool.RulePool
-	curTok        string
-	errMsg        string
-	remainToks    []string
+	nextRuleChain       rule_chain.RuleChain
+	pool                rule_pool.RulePool
+	curTok              string
+	errMsg              string
+	remainToks          []string
+	columnRuleChainPool []column_rule_chain.ColumnRuleChain
 }
 
 func (c *IsCommaChain) Exec(toks []string) bool {
@@ -38,8 +48,13 @@ func (c *IsCommaChain) isComma(tok string) bool {
 func (c *IsCommaChain) setNextRule(toks []string) bool {
 	var isSuccess bool = false
 	var nextTok string = toks[0]
-
-	//TODO:
+	for _, columnRuleChain := range c.columnRuleChainPool {
+		if columnRuleChain.IsValid(nextTok) {
+			var nextRuleChain rule_chain.RuleChain = columnRuleChain.ToRuleChain()
+			c.nextRuleChain = nextRuleChain
+			isSuccess = true
+		}
+	}
 
 	if !isSuccess {
 		c.errMsg = fmt.Sprintf("Unexpected keyword '%s' after `%b`", nextTok, constants.SYMBOL_COMMA)
@@ -64,8 +79,9 @@ func (c *IsCommaChain) NextRuleChain() rule_chain.RuleChain {
 	return c.nextRuleChain
 }
 
-func New(pool rule_pool.RulePool) rule_chain.RuleChain {
+func New(pool rule_pool.RulePool) *IsCommaChain {
 	return &IsCommaChain{
-		pool: pool,
+		columnRuleChainPool: []column_rule_chain.ColumnRuleChain{},
+		pool:                pool,
 	}
 }

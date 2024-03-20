@@ -86,6 +86,14 @@ func (c *ColumnWithDotChain) isNextRuleDotAtFirst(tok string) bool {
 	return hasDot && hasOnlyOneDot && hasDotAtFirst
 }
 
+func (c *ColumnWithDotChain) IsValid(tok string) bool {
+	return c.hasOneAndOnlyOneDot(tok)
+}
+
+func (c *ColumnWithDotChain) ToRuleChain() rule_chain.RuleChain {
+	return c
+}
+
 func (c *ColumnWithDotChain) EmitTok() string {
 	return c.curTok
 }
@@ -102,7 +110,7 @@ func (c *ColumnWithDotChain) NextRuleChain() rule_chain.RuleChain {
 	return c.nextRuleChain
 }
 
-func New(pool rule_pool.RulePool) rule_chain.RuleChain {
+func New(pool rule_pool.RulePool) *ColumnWithDotChain {
 	return &ColumnWithDotChain{
 		pool: pool,
 	}

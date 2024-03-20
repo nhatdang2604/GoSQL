@@ -57,6 +57,14 @@ func (c *ColumnWithStarChain) isNextRuleFrom(tok string) bool {
 	return isFrom
 }
 
+func (c *ColumnWithStarChain) IsValid(tok string) bool {
+	return c.isStar(tok)
+}
+
+func (c *ColumnWithStarChain) ToRuleChain() rule_chain.RuleChain {
+	return c
+}
+
 func (c *ColumnWithStarChain) EmitTok() string {
 	return c.curTok
 }
@@ -73,7 +81,7 @@ func (c *ColumnWithStarChain) NextRuleChain() rule_chain.RuleChain {
 	return c.nextRuleChain
 }
 
-func New(pool rule_pool.RulePool) rule_chain.RuleChain {
+func New(pool rule_pool.RulePool) *ColumnWithStarChain {
 	return &ColumnWithStarChain{
 		pool: pool,
 	}
