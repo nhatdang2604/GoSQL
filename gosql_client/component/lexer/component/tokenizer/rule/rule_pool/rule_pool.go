@@ -4,6 +4,7 @@ import (
 	"gosql_client/component/lexer/component/tokenizer/alias"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_unit"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_unit/common"
+	"gosql_client/component/lexer/component/tokenizer/rule/rule_unit/selectcmd"
 )
 
 // alias
@@ -25,7 +26,7 @@ func (rp RulePoolImpl) Get(key RuleKey) Rule {
 func New() RulePool {
 	var rules []Rule = []Rule{
 		&common.IsStartRule{},
-		&common.IsSelectRule{},
+		&selectcmd.IsSelectRule{},
 		&common.IsInsertRule{},
 	}
 

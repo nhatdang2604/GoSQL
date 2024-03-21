@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"gosql_client/component/lexer/component/tokenizer/constants"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain"
-	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain/start/selects/columns/common/table_name"
+	"gosql_client/component/lexer/component/tokenizer/rule/rule_chain/start/selects/columns/common/column_name"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_input"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_pool"
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_unit"
@@ -53,7 +53,7 @@ func (c *DotAtFirstChain) setNextRule(toks []string) bool {
 	var nextTok string = toks[0] // Because the '.b' tok now become 'b' tok
 
 	if c.isNextRuleHasCommaAtLast(nextTok) || c.isNextRuleDoesntHaveComma(nextTok) {
-		c.nextRuleChain = table_name.New(c.pool)
+		c.nextRuleChain = column_name.New(c.pool)
 		isSuccess = true
 	}
 

@@ -27,10 +27,8 @@ func (c *SelectChain) Exec(toks []string) bool {
 	var firstTok string = toks[0]
 	if c.isSelect(firstTok) {
 		c.curTok = firstTok
-		c.remainToks = c.remainToks[1:]
-		if len(toks) > 1 {
-			isSuccess = c.setNextRule(c.remainToks)
-		}
+		c.remainToks = toks[1:]
+		isSuccess = c.setNextRule(c.remainToks)
 	}
 
 	if !isSuccess && c.errMsg != "" {

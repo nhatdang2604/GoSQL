@@ -1,4 +1,4 @@
-package table_name
+package column_name
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type TableNameRule struct {
+type ColumnNameChain struct {
 	nextRuleChain rule_chain.RuleChain
 	pool          rule_pool.RulePool
 	curTok        string
@@ -19,7 +19,7 @@ type TableNameRule struct {
 	remainToks    []string
 }
 
-func (c *TableNameRule) Exec(toks []string) bool {
+func (c *ColumnNameChain) Exec(toks []string) bool {
 
 	var isSuccess bool = false
 	var firstTok string = toks[0]
@@ -32,14 +32,14 @@ func (c *TableNameRule) Exec(toks []string) bool {
 	return isSuccess
 }
 
-func (c *TableNameRule) hasComma(tok string) bool {
+func (c *ColumnNameChain) hasComma(tok string) bool {
 	var hasCommaRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_COMMA)
 	var hasComma bool = hasCommaRule.Validate(tok)
 
 	return hasComma
 }
 
-func (c *TableNameRule) setAsComma(toks []string) bool {
+func (c *ColumnNameChain) setAsComma(toks []string) bool {
 	var tok string = toks[0]
 	var comma string = string(constants.SYMBOL_COMMA)
 	var splits []string = strings.Split(tok, comma)
@@ -50,40 +50,40 @@ func (c *TableNameRule) setAsComma(toks []string) bool {
 		return false
 	}
 
-	var tableName string = splits[0]
+	var columnName string = splits[0]
 
 	toks[0] = comma // transform token 'b,' into ','
-	c.curTok = tableName
+	c.curTok = columnName
 	c.remainToks = toks
 	c.nextRuleChain = is_comma.SharedIsCommaChain
 	return true
 }
 
-func (c *TableNameRule) setAsFrom(toks []string) bool {
+func (c *ColumnNameChain) setAsFrom(toks []string) bool {
 	c.curTok = toks[0]
 	c.remainToks = toks[1:]
 	c.nextRuleChain = froms.New(c.pool)
 	return true
 }
 
-func (c *TableNameRule) EmitTok() string {
+func (c *ColumnNameChain) EmitTok() string {
 	return c.curTok
 }
 
-func (c *TableNameRule) RemainToks() []string {
+func (c *ColumnNameChain) RemainToks() []string {
 	return c.remainToks
 }
 
-func (c *TableNameRule) ErrorMsg() string {
+func (c *ColumnNameChain) ErrorMsg() string {
 	return c.errMsg
 }
 
-func (c *TableNameRule) NextRuleChain() rule_chain.RuleChain {
+func (c *ColumnNameChain) NextRuleChain() rule_chain.RuleChain {
 	return c.nextRuleChain
 }
 
 func New(pool rule_pool.RulePool) rule_chain.RuleChain {
-	return &TableNameRule{
+	return &ColumnNameChain{
 		pool: pool,
 	}
 }

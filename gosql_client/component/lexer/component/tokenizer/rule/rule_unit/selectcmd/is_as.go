@@ -1,4 +1,4 @@
-package common
+package selectcmd
 
 import (
 	"fmt"
@@ -8,31 +8,31 @@ import (
 	"gosql_client/component/lexer/component/tokenizer/rule/rule_input"
 )
 
-type IsSelectRule struct {
+type IsAsRule struct {
 	errMsg string
 }
 
-func (r *IsSelectRule) Validate(i interface{}) bool {
+func (r *IsAsRule) Validate(i interface{}) bool {
 	var st, ok = i.(rule_input.SingleTok)
 
 	if !ok {
-		r.errMsg = "unexpected input type for IsSelectRule.Validate()"
+		r.errMsg = "unexpected input type for IsAsRule.Validate()"
 		return false
 	}
 
 	var tok string = st.Tok
-	if rule_helper.AreTokEqual(tok, constants.KEYWORD_SELECT) {
+	if rule_helper.AreTokEqual(tok, constants.KEYWORD_AS) {
 		return true
 	}
 
-	r.errMsg = fmt.Sprintf("expect `select` but found :%s", tok)
+	r.errMsg = fmt.Sprintf("expect `%s` but found :%s", constants.KEYWORD_AS, tok)
 	return false
 }
 
-func (r *IsSelectRule) Key() alias.RuleKey {
-	return constants.RULE_IS_SELECT
+func (r *IsAsRule) Key() alias.RuleKey {
+	return constants.RULE_IS_AS
 }
 
-func (r *IsSelectRule) ErrorMsg() string {
+func (r *IsAsRule) ErrorMsg() string {
 	return r.errMsg
 }
