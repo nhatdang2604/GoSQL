@@ -1,4 +1,4 @@
-package common
+package insertcmd
 
 import (
 	"fmt"
