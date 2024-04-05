@@ -1,10 +1,8 @@
 package dot_at_first
 
 import (
-	"fmt"
 	"gosql_client/component/tokenizer/constants"
 	"gosql_client/component/tokenizer/rule/rule_chain"
-	"gosql_client/component/tokenizer/rule/rule_chain/start/selects/columns/common/column_name"
 	"gosql_client/component/tokenizer/rule/rule_input"
 	"gosql_client/component/tokenizer/rule/rule_pool"
 	"gosql_client/component/tokenizer/rule/rule_unit"
@@ -13,26 +11,30 @@ import (
 type DotAtFirstChain struct {
 	nextRuleChain rule_chain.RuleChain
 	pool          rule_pool.RulePool
-	curTok        string
-	errMsg        string
+	curTok        *string
+	errMsg        *string
 	remainToks    []string
 }
 
 func (c *DotAtFirstChain) Exec(toks []string) bool {
-	c.remainToks = toks
 	var isSuccess bool = false
-	var firstTok string = toks[0]
 
-	if c.hasOnlyOneDotAtFirst(firstTok) {
-		c.curTok = string(constants.SYMBOL_DOT)
+	c.remainToks = toks
+	c.curTok = nil
+
+	if isSuccess = c.Validate(toks); isSuccess {
+		var firstTok string = toks[0]
+		var dot string = string(constants.SYMBOL_DOT)
+
+		c.curTok = &dot
 		toks[0] = c.rmDotFromTok(firstTok) //replace the ".b" with "b"
 		c.remainToks = toks
-		isSuccess = c.setNextRule(c.remainToks)
 	}
 	return isSuccess
 }
 
-func (c *DotAtFirstChain) hasOnlyOneDotAtFirst(tok string) bool {
+func (c *DotAtFirstChain) Validate(toks []string) bool {
+	var tok string = toks[0]
 	var hasDotRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_DOT)
 	var hasOnlyOneDotRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_ONLY_ONE_DOT)
 	var hasDotAtFirstRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_DOT_AT_FIRST)
@@ -41,6 +43,17 @@ func (c *DotAtFirstChain) hasOnlyOneDotAtFirst(tok string) bool {
 	var hasOnlyOneDot = hasOnlyOneDotRule.Validate(rule_input.SingleTok{Tok: tok})
 	var hasDotAtFirst = hasDotAtFirstRule.Validate(rule_input.SingleTok{Tok: tok})
 
+	if !hasDot {
+		var msg string = hasDotRule.ErrorMsg()
+		c.errMsg = &msg
+	} else if !hasOnlyOneDot {
+		var msg string = hasOnlyOneDotRule.ErrorMsg()
+		c.errMsg = &msg
+	} else if !hasDotAtFirst {
+		var msg string = hasDotAtFirstRule.ErrorMsg()
+		c.errMsg = &msg
+	}
+
 	return hasDot && hasOnlyOneDot && hasDotAtFirst
 }
 
@@ -48,42 +61,7 @@ func (c *DotAtFirstChain) rmDotFromTok(tok string) string {
 	return tok[1:]
 }
 
-func (c *DotAtFirstChain) setNextRule(toks []string) bool {
-	var isSuccess bool = false
-	var nextTok string = toks[0] // Because the '.b' tok now become 'b' tok
-
-	if c.isNextRuleHasCommaAtLast(nextTok) || c.isNextRuleDoesntHaveComma(nextTok) {
-		c.nextRuleChain = column_name.New(c.pool)
-		isSuccess = true
-	}
-
-	if !isSuccess {
-		c.errMsg = fmt.Sprintf("Expected column name after `%b`", constants.SYMBOL_DOT)
-	}
-
-	return isSuccess
-}
-
-func (c *DotAtFirstChain) isNextRuleHasCommaAtLast(tok string) bool {
-	var hasCommaRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_COMMA)
-	var hasOnlyOneCommaRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_ONLY_ONE_COMMA)
-	var HasCommaAtLastRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_COMMA_AT_LAST)
-
-	var hasComma bool = hasCommaRule.Validate(tok)
-	var hasOnlyOneComma bool = hasOnlyOneCommaRule.Validate(tok)
-	var HasCommaAtLast bool = HasCommaAtLastRule.Validate(tok)
-
-	return hasComma && hasOnlyOneComma && HasCommaAtLast
-}
-
-func (c *DotAtFirstChain) isNextRuleDoesntHaveComma(tok string) bool {
-	var hasCommaRule rule_unit.Rule = c.pool.Get(constants.RULE_HAS_COMMA)
-	var notHaveComma bool = !hasCommaRule.Validate(tok)
-
-	return notHaveComma
-}
-
-func (c *DotAtFirstChain) EmitTok() string {
+func (c *DotAtFirstChain) EmitTok() *string {
 	return c.curTok
 }
 
@@ -91,8 +69,12 @@ func (c *DotAtFirstChain) RemainToks() []string {
 	return c.remainToks
 }
 
-func (c *DotAtFirstChain) ErrorMsg() string {
+func (c *DotAtFirstChain) ErrorMsg() *string {
 	return c.errMsg
+}
+
+func (c *DotAtFirstChain) SetNextRuleChain(nextRuleChain rule_chain.RuleChain) {
+	c.nextRuleChain = nextRuleChain
 }
 
 func (c *DotAtFirstChain) NextRuleChain() rule_chain.RuleChain {

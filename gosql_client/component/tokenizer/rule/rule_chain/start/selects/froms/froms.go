@@ -1,10 +1,8 @@
 package froms
 
 import (
-	"fmt"
 	"gosql_client/component/tokenizer/constants"
 	"gosql_client/component/tokenizer/rule/rule_chain"
-	"gosql_client/component/tokenizer/rule/rule_chain/start/selects/froms/table_name"
 	"gosql_client/component/tokenizer/rule/rule_input"
 	"gosql_client/component/tokenizer/rule/rule_pool"
 )
@@ -12,40 +10,39 @@ import (
 type FromChain struct {
 	nextRuleChain rule_chain.RuleChain
 	pool          rule_pool.RulePool
-	curTok        string
-	errMsg        string
+	curTok        *string
+	errMsg        *string
 	remainToks    []string
 }
 
 func (c *FromChain) Exec(toks []string) bool {
 
-	var isSuccess bool = false
-	var firstTok string = toks[0]
-	if c.isFrom(firstTok) {
-		c.curTok = firstTok
-		c.remainToks = toks[1:]
-		isSuccess = c.setNextRule(c.remainToks)
-	}
+	c.curTok = nil
 
-	if !isSuccess && c.errMsg != "" {
-		c.errMsg = fmt.Sprintf("Expected '%s' keyword, found '%s'", constants.KEYWORD_FROM, firstTok)
+	var isSuccess bool = false
+	if isSuccess = c.Validate(toks); isSuccess {
+		var firstTok string = toks[0]
+		c.curTok = &firstTok
+		c.remainToks = toks[1:]
 	}
 
 	return isSuccess
 }
 
-func (c *FromChain) isFrom(tok string) bool {
+func (c *FromChain) Validate(toks []string) bool {
+	var tok string = toks[0]
 	fromRule := c.pool.Get(constants.RULE_IS_FROM)
 	var isFrom bool = fromRule.Validate(rule_input.SingleTok{Tok: tok})
+
+	if !isFrom {
+		var msg string = fromRule.ErrorMsg()
+		c.errMsg = &msg
+	}
+
 	return isFrom
 }
 
-func (c *FromChain) setNextRule(toks []string) bool {
-	c.nextRuleChain = table_name.New(c.pool)
-	return true
-}
-
-func (c *FromChain) EmitTok() string {
+func (c *FromChain) EmitTok() *string {
 	return c.curTok
 }
 
@@ -53,8 +50,12 @@ func (c *FromChain) RemainToks() []string {
 	return c.remainToks
 }
 
-func (c *FromChain) ErrorMsg() string {
+func (c *FromChain) ErrorMsg() *string {
 	return c.errMsg
+}
+
+func (c *FromChain) SetNextRuleChain(nextRuleChain rule_chain.RuleChain) {
+	c.nextRuleChain = nextRuleChain
 }
 
 func (c *FromChain) NextRuleChain() rule_chain.RuleChain {

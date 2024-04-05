@@ -29,7 +29,6 @@ func New() RulePool {
 		&common.HasSemicolonAtLastRule{},
 		&common.HasSemicolonRule{},
 		&common.IsSemicolonRule{},
-		&common.IsStartRule{},
 
 		&insertcmd.IsInsertRule{},
 

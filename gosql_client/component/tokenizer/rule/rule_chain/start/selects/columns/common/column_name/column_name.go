@@ -1,11 +1,8 @@
 package column_name
 
 import (
-	"fmt"
 	"gosql_client/component/tokenizer/constants"
 	"gosql_client/component/tokenizer/rule/rule_chain"
-	"gosql_client/component/tokenizer/rule/rule_chain/start/selects/columns/common/is_comma"
-	"gosql_client/component/tokenizer/rule/rule_chain/start/selects/froms"
 	"gosql_client/component/tokenizer/rule/rule_pool"
 	"gosql_client/component/tokenizer/rule/rule_unit"
 	"strings"
@@ -14,22 +11,32 @@ import (
 type ColumnNameChain struct {
 	nextRuleChain rule_chain.RuleChain
 	pool          rule_pool.RulePool
-	curTok        string
-	errMsg        string
+	curTok        *string
+	errMsg        *string
 	remainToks    []string
 }
 
 func (c *ColumnNameChain) Exec(toks []string) bool {
 
+	c.remainToks = toks
+	c.curTok = nil
+
 	var isSuccess bool = false
-	var firstTok string = toks[0]
-	if c.hasComma(firstTok) {
-		isSuccess = c.setAsComma(toks)
-	} else {
-		isSuccess = c.setAsFrom(toks)
+	if isSuccess = c.Validate(toks); isSuccess {
+		var firstTok string = toks[0]
+		if c.hasComma(firstTok) {
+			c.setAsNextRuleChainIsComma(toks)
+		} else {
+			c.setAsNextRuleChainIsFrom(toks)
+		}
 	}
 
 	return isSuccess
+}
+
+// Always return true in this case
+func (c *ColumnNameChain) Validate(toks []string) bool {
+	return true
 }
 
 func (c *ColumnNameChain) hasComma(tok string) bool {
@@ -39,34 +46,28 @@ func (c *ColumnNameChain) hasComma(tok string) bool {
 	return hasComma
 }
 
-func (c *ColumnNameChain) setAsComma(toks []string) bool {
+func (c *ColumnNameChain) setAsNextRuleChainIsComma(toks []string) bool {
 	var tok string = toks[0]
 	var comma string = string(constants.SYMBOL_COMMA)
 	var splits []string = strings.Split(tok, comma)
-
-	//More than 1 comma check
-	if len(splits) > 1 {
-		c.errMsg = fmt.Sprintf("More than 1 comma in '%s'", tok)
-		return false
-	}
-
 	var columnName string = splits[0]
+	var rmColumnNameFromSplits = splits[1:]
+	var afterRmColumName = strings.Join(rmColumnNameFromSplits, comma)
 
-	toks[0] = comma // transform token 'b,' into ','
-	c.curTok = columnName
+	toks[0] = afterRmColumName
+	c.curTok = &columnName
 	c.remainToks = toks
-	c.nextRuleChain = is_comma.SharedIsCommaChain
 	return true
 }
 
-func (c *ColumnNameChain) setAsFrom(toks []string) bool {
-	c.curTok = toks[0]
+func (c *ColumnNameChain) setAsNextRuleChainIsFrom(toks []string) bool {
+	var firstTok string = toks[0]
+	c.curTok = &firstTok
 	c.remainToks = toks[1:]
-	c.nextRuleChain = froms.New(c.pool)
 	return true
 }
 
-func (c *ColumnNameChain) EmitTok() string {
+func (c *ColumnNameChain) EmitTok() *string {
 	return c.curTok
 }
 
@@ -74,8 +75,12 @@ func (c *ColumnNameChain) RemainToks() []string {
 	return c.remainToks
 }
 
-func (c *ColumnNameChain) ErrorMsg() string {
+func (c *ColumnNameChain) ErrorMsg() *string {
 	return c.errMsg
+}
+
+func (c *ColumnNameChain) SetNextRuleChain(nextRuleChain rule_chain.RuleChain) {
+	c.nextRuleChain = nextRuleChain
 }
 
 func (c *ColumnNameChain) NextRuleChain() rule_chain.RuleChain {
