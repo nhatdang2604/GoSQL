@@ -1,6 +1,7 @@
 package table_name
 
 import (
+	"gosql_client/component/tokenizer/alias"
 	"gosql_client/component/tokenizer/constants"
 	"gosql_client/component/tokenizer/rule/rule_chain"
 	"gosql_client/component/tokenizer/rule/rule_input"
@@ -63,6 +64,10 @@ func (c *TableNameChain) setAsNextRuleChainIsAs(toks []string) bool {
 
 func (c *TableNameChain) EmitTok() *string {
 	return c.curTok
+}
+
+func (c *TableNameChain) TokType() alias.TokType {
+	return constants.TOKTYPE_IDENTIFIER
 }
 
 func (c *TableNameChain) RemainToks() []string {

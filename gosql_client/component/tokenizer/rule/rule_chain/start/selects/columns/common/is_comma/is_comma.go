@@ -1,27 +1,18 @@
 package is_comma
 
 import (
+	"gosql_client/component/tokenizer/alias"
 	"gosql_client/component/tokenizer/constants"
 	"gosql_client/component/tokenizer/rule/rule_chain"
-	"gosql_client/component/tokenizer/rule/rule_chain/start/selects/columns/interfaces/column_rule_chain"
 	"gosql_client/component/tokenizer/rule/rule_pool"
 )
 
-var (
-	SharedIsCommaChain *IsCommaChain
-)
-
-func (c *IsCommaChain) AddColumnRuleChain(columnRuleChain column_rule_chain.ColumnRuleChain) {
-	c.columnRuleChainPool = append(c.columnRuleChainPool, columnRuleChain)
-}
-
 type IsCommaChain struct {
-	nextRuleChain       rule_chain.RuleChain
-	pool                rule_pool.RulePool
-	curTok              *string
-	errMsg              *string
-	remainToks          []string
-	columnRuleChainPool []column_rule_chain.ColumnRuleChain
+	nextRuleChain rule_chain.RuleChain
+	pool          rule_pool.RulePool
+	curTok        *string
+	errMsg        *string
+	remainToks    []string
 }
 
 func (c *IsCommaChain) Exec(toks []string) bool {
@@ -53,6 +44,10 @@ func (c *IsCommaChain) EmitTok() *string {
 	return c.curTok
 }
 
+func (c *IsCommaChain) TokType() alias.TokType {
+	return constants.TOKTYPE_SYMBOL
+}
+
 func (c *IsCommaChain) RemainToks() []string {
 	return c.remainToks
 }
@@ -69,9 +64,8 @@ func (c *IsCommaChain) NextRuleChain() rule_chain.RuleChain {
 	return c.nextRuleChain
 }
 
-func New(pool rule_pool.RulePool) *IsCommaChain {
+func New(pool rule_pool.RulePool) rule_chain.RuleChain {
 	return &IsCommaChain{
-		columnRuleChainPool: []column_rule_chain.ColumnRuleChain{},
-		pool:                pool,
+		pool: pool,
 	}
 }

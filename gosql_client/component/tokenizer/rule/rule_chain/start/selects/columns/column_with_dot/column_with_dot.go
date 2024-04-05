@@ -1,6 +1,7 @@
 package column_with_dot
 
 import (
+	"gosql_client/component/tokenizer/alias"
 	"gosql_client/component/tokenizer/constants"
 	"gosql_client/component/tokenizer/rule/rule_chain"
 	"gosql_client/component/tokenizer/rule/rule_input"
@@ -71,12 +72,12 @@ func (c *ColumnWithDotChain) rmDbNameFromTok(tok string) string {
 	return dot + tableName
 }
 
-func (c *ColumnWithDotChain) ToRuleChain() rule_chain.RuleChain {
-	return c
-}
-
 func (c *ColumnWithDotChain) EmitTok() *string {
 	return c.curTok
+}
+
+func (c *ColumnWithDotChain) TokType() alias.TokType {
+	return constants.TOKTYPE_IDENTIFIER
 }
 
 func (c *ColumnWithDotChain) RemainToks() []string {
@@ -95,7 +96,7 @@ func (c *ColumnWithDotChain) NextRuleChain() rule_chain.RuleChain {
 	return c.nextRuleChain
 }
 
-func New(pool rule_pool.RulePool) *ColumnWithDotChain {
+func New(pool rule_pool.RulePool) rule_chain.RuleChain {
 	return &ColumnWithDotChain{
 		pool: pool,
 	}

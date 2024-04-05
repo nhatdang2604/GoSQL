@@ -1,6 +1,8 @@
 package start
 
 import (
+	"gosql_client/component/tokenizer/alias"
+	"gosql_client/component/tokenizer/constants"
 	"gosql_client/component/tokenizer/rule/rule_chain"
 	"gosql_client/component/tokenizer/rule/rule_pool"
 )
@@ -27,6 +29,10 @@ func (c *StartChain) Validate(toks []string) bool {
 
 func (c *StartChain) EmitTok() *string {
 	return c.curTok
+}
+
+func (c *StartChain) TokType() alias.TokType {
+	return constants.TOKTYPE_UNK_CONST
 }
 
 func (c *StartChain) RemainToks() []string {

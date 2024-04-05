@@ -1,6 +1,7 @@
 package column_name
 
 import (
+	"gosql_client/component/tokenizer/alias"
 	"gosql_client/component/tokenizer/constants"
 	"gosql_client/component/tokenizer/rule/rule_chain"
 	"gosql_client/component/tokenizer/rule/rule_pool"
@@ -69,6 +70,10 @@ func (c *ColumnNameChain) setAsNextRuleChainIsFrom(toks []string) bool {
 
 func (c *ColumnNameChain) EmitTok() *string {
 	return c.curTok
+}
+
+func (c *ColumnNameChain) TokType() alias.TokType {
+	return constants.TOKTYPE_IDENTIFIER
 }
 
 func (c *ColumnNameChain) RemainToks() []string {

@@ -1,6 +1,7 @@
 package dot_at_first
 
 import (
+	"gosql_client/component/tokenizer/alias"
 	"gosql_client/component/tokenizer/constants"
 	"gosql_client/component/tokenizer/rule/rule_chain"
 	"gosql_client/component/tokenizer/rule/rule_input"
@@ -63,6 +64,10 @@ func (c *DotAtFirstChain) rmDotFromTok(tok string) string {
 
 func (c *DotAtFirstChain) EmitTok() *string {
 	return c.curTok
+}
+
+func (c *DotAtFirstChain) TokType() alias.TokType {
+	return constants.TOKTYPE_SYMBOL
 }
 
 func (c *DotAtFirstChain) RemainToks() []string {
