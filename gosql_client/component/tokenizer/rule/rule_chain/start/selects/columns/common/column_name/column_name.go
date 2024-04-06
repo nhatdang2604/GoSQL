@@ -92,6 +92,10 @@ func (c *ColumnNameChain) NextRuleChain() rule_chain.RuleChain {
 	return c.nextRuleChain
 }
 
+func (c *ColumnNameChain) SetRulePool(pool rule_pool.RulePool) {
+	c.pool = pool
+}
+
 func New(pool rule_pool.RulePool) rule_chain.RuleChain {
 	return &ColumnNameChain{
 		pool: pool,
