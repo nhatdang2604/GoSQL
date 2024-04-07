@@ -31,6 +31,9 @@ func New() RulePool {
 		&common.IsSemicolonRule{},
 
 		&insertcmd.IsInsertRule{},
+		&insertcmd.IsIntoRule{},
+		&insertcmd.IsValueRule{},
+		&insertcmd.HasOpenBracketAtFirstRule{},
 
 		&selectcmd.HasCommaAtLastRule{},
 		&selectcmd.HasCommaRule{},
